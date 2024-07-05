@@ -56,7 +56,33 @@ func (h *EventHandler) GetOne(ctx *fiber.Ctx) error {
 }
 
 func (h *EventHandler) CreateOne(ctx *fiber.Ctx) error {
-	return nil
+	event := &models.Event{}
+
+	context, cancel := context.WithTimeout(context.Background(), time.Duration(5*time.Second))
+	defer cancel()
+
+	if err := ctx.BodyParser(event); err != nil {
+		return ctx.Status(fiber.StatusUnprocessableEntity).JSON(&fiber.Map{
+			"status":  "fail",
+			"message": err.Error(),
+			"data":    nil,
+		})
+	}
+
+	event, err := h.repository.CreateOne(context, event)
+
+	if err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
+			"status":  "fail",
+			"message": err.Error(),
+		})
+	}
+
+	return ctx.Status(fiber.StatusCreated).JSON(&fiber.Map{
+		"status":  "success",
+		"message": "Event created",
+		"data":    event,
+	})
 }
 
 func NewEventHandler(router fiber.Router, repository models.EventRepository) {
