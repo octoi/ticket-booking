@@ -2,9 +2,10 @@ package handlers
 
 import (
 	"context"
+	"github.com/gofiber/fiber/v2"
+	"strconv"
 	"time"
 
-	"github.com/gofiber/fiber/v2"
 	"github.com/octoi/ticket-booking/models"
 )
 
@@ -33,7 +34,25 @@ func (h *EventHandler) GetMany(ctx *fiber.Ctx) error {
 }
 
 func (h *EventHandler) GetOne(ctx *fiber.Ctx) error {
-	return nil
+	eventId, _ := strconv.Atoi(ctx.Params("eventId"))
+
+	context, cancel := context.WithTimeout(context.Background(), time.Duration(5*time.Second))
+	defer cancel()
+
+	event, err := h.repository.GetOne(context, uint(eventId))
+
+	if err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
+			"status":  "fail",
+			"message": err.Error(),
+		})
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(&fiber.Map{
+		"status":  "success",
+		"message": "",
+		"data":    event,
+	})
 }
 
 func (h *EventHandler) CreateOne(ctx *fiber.Ctx) error {
