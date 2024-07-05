@@ -23,7 +23,7 @@ func (r *EventRepository) GetMany(ctx context.Context) ([]*models.Event, error) 
 	return events, nil
 }
 
-func (r *EventRepository) GetOne(ctx context.Context, eventId string) (*models.Event, error) {
+func (r *EventRepository) GetOne(ctx context.Context, eventId uint) (*models.Event, error) {
 	event := &models.Event{}
 
 	res := r.db.Model(event).Where("id = ?", eventId).First(event)
@@ -35,8 +35,24 @@ func (r *EventRepository) GetOne(ctx context.Context, eventId string) (*models.E
 	return event, nil
 }
 
-func (r *EventRepository) CreateOne(ctx context.Context, event models.Event) (*models.Event, error) {
-	return nil, nil
+func (r *EventRepository) CreateOne(ctx context.Context, event *models.Event) (*models.Event, error) {
+	res := r.db.Model(event).Create(event)
+
+	if res.Error != nil {
+		return nil, res.Error
+	}
+
+	return event, nil
+}
+
+func (r *EventRepository) UpdateOne(ctx context.Context, eventId uint, updateData map[string]interface{}) (*models.Event, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (r *EventRepository) DeleteOne(ctx context.Context, eventId uint) error {
+	//TODO implement me
+	panic("implement me")
 }
 
 func NewEventRepository(db *gorm.DB) models.EventRepository {
