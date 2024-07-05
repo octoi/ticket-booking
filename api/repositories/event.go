@@ -64,8 +64,9 @@ func (r *EventRepository) UpdateOne(ctx context.Context, eventId uint, updateDat
 }
 
 func (r *EventRepository) DeleteOne(ctx context.Context, eventId uint) error {
-	//TODO implement me
-	panic("implement me")
+	res := r.db.Delete(&models.Event{}, eventId)
+
+	return res.Error
 }
 
 func NewEventRepository(db *gorm.DB) models.EventRepository {
