@@ -35,19 +35,29 @@ func (r *TicketRepository) GetOne(ctx context.Context, ticketId uint) (*models.T
 }
 
 func (r *TicketRepository) CreateOne(ctx context.Context, ticket *models.Ticket) (*models.Ticket, error) {
-	//TODO implement me
-	panic("implement me")
+	res := r.db.Model(ticket).Create(ticket)
+
+	if res.Error != nil {
+		return nil, res.Error
+	}
+
+	return r.GetOne(ctx, ticket.ID)
 }
 
 func (r *TicketRepository) UpdateOne(ctx context.Context, ticketId uint, updateData map[string]interface{}) (*models.Ticket, error) {
-	//TODO implement me
-	panic("implement me")
+	ticket := &models.Ticket{}
+
+	updateRes := r.db.Model(ticket).Where("id = ?", ticketId).Updates(updateData)
+
+	if updateRes.Error != nil {
+		return nil, updateRes.Error
+	}
+
+	return r.GetOne(ctx, ticket.ID)
 }
 
 func NewTicketRepository(db *gorm.DB) models.TicketRepository {
 	return &TicketRepository{
-		db: db
+		db: db,
 	}
 }
-
-
