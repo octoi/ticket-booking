@@ -11,7 +11,7 @@ type TicketRepository struct {
 }
 
 func (r *TicketRepository) GetMany(ctx context.Context) ([]*models.Ticket, error) {
-	tickets := []*models.Ticket{}
+	var tickets []*models.Ticket
 
 	res := r.db.Model(&models.Ticket{}).Preload("Event").Order("updated_at desc").Find(&tickets)
 
@@ -23,8 +23,15 @@ func (r *TicketRepository) GetMany(ctx context.Context) ([]*models.Ticket, error
 }
 
 func (r *TicketRepository) GetOne(ctx context.Context, ticketId uint) (*models.Ticket, error) {
-	//TODO implement me
-	panic("implement me")
+	ticket := &models.Ticket{}
+
+	res := r.db.Model(&models.Ticket{}).Preload("Event").First(ticket)
+
+	if res.Error != nil {
+		return nil, res.Error
+	}
+
+	return ticket, nil
 }
 
 func (r *TicketRepository) CreateOne(ctx context.Context, ticket *models.Ticket) (*models.Ticket, error) {
