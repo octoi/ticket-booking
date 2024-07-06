@@ -22,12 +22,14 @@ func main() {
 
 	// Repositories
 	eventRepository := repositories.NewEventRepository(db)
+	ticketRepository := repositories.NewTicketRepository(db)
 
 	// Repositories
 	server := app.Group("/api")
 
 	// Repositories
 	handlers.NewEventHandler(server.Group("/event"), eventRepository)
+	handlers.NewTicketHandler(server.Group("/event"), ticketRepository)
 
 	app.Listen(fmt.Sprintf(":" + envConfig.ServerPort))
 }
