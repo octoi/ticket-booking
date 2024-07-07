@@ -11,9 +11,6 @@ type AuthCredentials struct {
 	Password string `json:"password" validate:"required"`
 }
 
-type User struct {
-}
-
 type AuthRepository interface {
 	RegisterUser(ctx context.Context, registerData *AuthCredentials) (*User, error)
 	GetUser(ctx context.Context, query interface{}, args ...interface{}) (*User, error)
