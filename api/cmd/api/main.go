@@ -36,5 +36,7 @@ func main() {
 	handlers.NewEventHandler(server.Group("/event"), eventRepository)
 	handlers.NewTicketHandler(server.Group("/event"), ticketRepository)
 
+	handlers.NewAuthHandler(server.Group("/auth"), authService)
+
 	app.Listen(fmt.Sprintf(":" + envConfig.ServerPort))
 }
