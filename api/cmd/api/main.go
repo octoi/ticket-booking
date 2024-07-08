@@ -8,6 +8,7 @@ import (
 	"github.com/octoi/ticket-booking/db"
 	"github.com/octoi/ticket-booking/handlers"
 	"github.com/octoi/ticket-booking/repositories"
+	"github.com/octoi/ticket-booking/services"
 )
 
 func main() {
@@ -23,11 +24,15 @@ func main() {
 	// Repositories
 	eventRepository := repositories.NewEventRepository(db)
 	ticketRepository := repositories.NewTicketRepository(db)
+	authRepository := repositories.NewAuthRepository(db)
 
-	// Repositories
+	// Service
+	authService := services.NewAuthService(authRepository)
+
+	// Routing
 	server := app.Group("/api")
 
-	// Repositories
+	// Handlers
 	handlers.NewEventHandler(server.Group("/event"), eventRepository)
 	handlers.NewTicketHandler(server.Group("/event"), ticketRepository)
 
