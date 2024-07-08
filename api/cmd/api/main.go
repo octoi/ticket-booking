@@ -7,6 +7,7 @@ import (
 	"github.com/octoi/ticket-booking/config"
 	"github.com/octoi/ticket-booking/db"
 	"github.com/octoi/ticket-booking/handlers"
+	"github.com/octoi/ticket-booking/middlewares"
 	"github.com/octoi/ticket-booking/repositories"
 	"github.com/octoi/ticket-booking/services"
 )
@@ -32,9 +33,11 @@ func main() {
 	// Routing
 	server := app.Group("/api")
 
+	privateRoutes := server.Use(middlewares.AuthProtected(db))
+
 	// Handlers
-	handlers.NewEventHandler(server.Group("/event"), eventRepository)
-	handlers.NewTicketHandler(server.Group("/event"), ticketRepository)
+	handlers.NewEventHandler(privateRoutes.Group("/event"), eventRepository)
+	handlers.NewTicketHandler(privateRoutes.Group("/event"), ticketRepository)
 
 	handlers.NewAuthHandler(server.Group("/auth"), authService)
 
